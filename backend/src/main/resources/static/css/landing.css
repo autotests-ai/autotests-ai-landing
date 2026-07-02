@@ -1,4 +1,4 @@
-/* Landing — configurator 1fr/2fr layout (main left, sticky terminal right) */
+/* Landing — terminal panel below fixed header */
 
 .landing.configurator {
   padding-top: calc(var(--header-height) + var(--space-4));
@@ -6,47 +6,6 @@
 
 .landing {
   overflow-x: clip;
-}
-
-.landing__main {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
-  padding-top: var(--space-2);
-}
-
-.landing__brands {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-}
-
-.landing__brand {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 600;
-  line-height: 1.2;
-  flex-shrink: 0;
-}
-
-.landing__brand-partner {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  text-decoration: none;
-}
-
-.landing__brand-partner:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 4px;
-  border-radius: var(--radius-sm);
-}
-
-.landing__brand-accent {
-  color: var(--color-success);
 }
 
 .landing__terminal-output {
@@ -57,27 +16,7 @@
   color: var(--color-text-muted);
 }
 
-.landing__output-foot {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.landing__output-foot .text {
-  margin: 0;
-}
-
 @media (min-width: 769px) {
-  .landing__workspace {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-    align-items: stretch;
-  }
-
-  .landing__main {
-    align-self: start;
-  }
-
   .landing__aside {
     align-self: stretch;
     display: flex;
@@ -123,14 +62,6 @@
 }
 
 @media (max-width: 768px) {
-  .landing__main {
-    order: 1;
-  }
-
-  .landing__aside {
-    order: 2;
-  }
-
   .landing .terminal-panel__code {
     min-height: 160px;
     max-height: min(40vh, 360px);

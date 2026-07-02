@@ -2,7 +2,12 @@
 <header class="header" data-testid="header">
   <div class="header__inner">
   <div class="header__brand" data-testid="header-brand">
-    <a href="https://qa.guru/" class="header__brand-link" data-testid="header-brand-link" aria-label="qa.guru">
+    <div class="header__brands" data-testid="header-brands">
+      <a href="/" class="header__brand-wordmark" data-testid="header-brand-autotests" aria-label="autotests.ai">
+        autotests<span class="header__brand-accent">.ai</span>
+      </a>
+      <span class="header__brand-by" aria-hidden="true">by</span>
+      <a href="https://qa.guru/" class="header__brand-link" data-testid="header-brand-link" aria-label="qa.guru">
       <svg class="header__brand-logo" viewBox="0 0 140 26" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">
         <path d="M76.1067 14.8843C74.3621 13.3041 73.5068 11.2774 73.5068 8.78693C73.5068 6.2965 74.3962 4.25261 76.1238 2.68964C77.8514 1.12666 80.075 0.319413 82.7433 0.319413C83.4024 0.305518 84.0613 0.357297 84.7099 0.473992C85.1615 0.560655 85.607 0.67538 86.0442 0.8175L87.3268 1.33277V5.91864C82.9656 3.66864 78.4842 5.16291 78.6382 8.85567C78.6382 10.1438 78.9974 11.1228 79.7671 11.8442C80.5087 12.5508 81.4988 12.9338 82.5209 12.9091C83.359 12.9091 84.009 12.7374 84.4537 12.4453V7.43008H89.4651V14.7641C88.8327 15.451 87.8747 16.0522 86.609 16.5331C85.3035 17.0291 83.9166 17.2738 82.5209 17.2545C79.978 17.2545 77.84 16.4644 76.1067 14.8843Z" fill="var(--color-brand-logo)"/>
         <path d="M91.2845 0.597231H96.2883V10.1926C96.2883 11.9325 97.3503 12.7077 98.7209 12.7077C100.092 12.7077 101.137 11.9325 101.137 10.1926V0.597231H106.123V10.1581C106.123 12.4321 105.438 14.1892 104.016 15.4123C102.593 16.6355 100.863 17.2556 98.7209 17.2556C96.5792 17.2556 94.8146 16.6527 93.4093 15.4123C92.0049 14.172 91.2845 12.4321 91.2845 10.1581V0.597231Z" fill="var(--color-brand-logo)"/>
@@ -14,21 +19,8 @@
         <path d="M32.4379 21.3152H14.9675V25.6828H32.4379V21.3152Z" fill="var(--color-primary)"/>
         <path d="M15.4209 8.37699V13.7592L0 19.3531V14.2128L9.16186 11.0681L0 7.92343V2.78313L15.4209 8.37699Z" fill="var(--color-primary)"/>
       </svg>
-    </a>
-  </div>
-  <nav class="header__nav" data-testid="header-nav" aria-label="Main navigation">
-    <a href="https://qa.guru/" class="link link--nav is-active" data-testid="header-nav-home" aria-current="page">Главная</a>
-    <a href="#" class="link link--nav" data-testid="header-nav-courses">Курсы</a>
-    <a href="https://qa.guru/about" class="link link--nav" data-testid="header-nav-about">О школе</a>
-  </nav>
-  <div class="header__search" data-testid="header-search">
-    <input
-      type="search"
-      class="input"
-      placeholder="Поиск"
-      data-testid="header-search-input"
-      aria-label="Поиск"
-    >
+      </a>
+    </div>
   </div>
   <div class="header__slot" data-testid="header-slot"><!-- downstream inject --></div>
   <div class="header__tools" data-testid="header-tools">

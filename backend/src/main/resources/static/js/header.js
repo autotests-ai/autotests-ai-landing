@@ -10,7 +10,7 @@ const TEMPLATE_URLS = [
 ];
 
 /**
- * @typedef {{ href?: string }} HeaderBrandConfig
+ * @typedef {{ href?: string, autotestsHref?: string }} HeaderBrandConfig
  * @typedef {{ href: string, label: string, active?: boolean, testid?: string }} HeaderNavItem
  * @typedef {{ default?: 'ru' | 'en' }} HeaderLangConfig
  * @typedef {{ default?: 'dark' | 'light' }} HeaderThemeConfig
@@ -80,6 +80,11 @@ function resolveHeaderConfig(override) {
 
 /** @param {ParentNode} root @param {HeaderConfig} config */
 function applyHeaderConfig(root, config) {
+  const autotestsLink = root.querySelector('[data-testid="header-brand-autotests"]');
+  if (autotestsLink && config.brand?.autotestsHref) {
+    autotestsLink.href = config.brand.autotestsHref;
+  }
+
   const brandLink = root.querySelector('[data-testid="header-brand-link"]');
   if (brandLink && config.brand?.href) {
     brandLink.href = config.brand.href;

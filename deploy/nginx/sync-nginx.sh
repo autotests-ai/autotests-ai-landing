@@ -25,9 +25,6 @@ fi
 cp "$CONF_SRC" "$TMP"
 
 : >"$SSL_SNIPPET"
-if [[ -f "$SITE_PATH" ]]; then
-  grep -E '^\s*ssl_certificate(_key)? ' "$SITE_PATH" | awk '!seen[$0]++' >>"$SSL_SNIPPET" || true
-fi
 if [[ ! -s "$SSL_SNIPPET" ]]; then
   for domain in autotests.ai autotests.ai-0001 autotests.cloud-0001; do
     if [[ -f "/etc/letsencrypt/live/${domain}/fullchain.pem" ]]; then
@@ -38,6 +35,9 @@ if [[ ! -s "$SSL_SNIPPET" ]]; then
       break
     fi
   done
+fi
+if [[ ! -s "$SSL_SNIPPET" && -f "$SITE_PATH" ]]; then
+  grep -E '^\s*ssl_certificate(_key)? ' "$SITE_PATH" | awk '!seen[$0]++' >>"$SSL_SNIPPET" || true
 fi
 
 if [[ -s "$SSL_SNIPPET" ]]; then

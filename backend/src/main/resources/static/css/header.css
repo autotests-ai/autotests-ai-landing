@@ -146,3 +146,25 @@
     display: none;
   }
 }
+
+/* autotests.ai mark — managed by autotests-ai-logo-generator */
+.header__brand-mark-link {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 0;
+  text-decoration: none;
+}
+
+.header__brand-mark-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.header__brand-mark {
+  display: block;
+  width: auto;
+  height: var(--header-brand-logo-height);
+  max-height: var(--header-brand-logo-height);
+}

@@ -1,0 +1,43 @@
+name: Deploy production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [deploy]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Require deploy secrets
+        run: |
+          test -n "${{ secrets.DEPLOY_SSH_KEY }}" || {
+            echo "::error::Missing secret DEPLOY_SSH_KEY — see README § Autodeploy"
+            exit 1
+          }
+
+      - name: Deploy on selenoid.autotests.cloud
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ vars.DEPLOY_HOST || 'selenoid.autotests.cloud' }}
+          username: ${{ vars.DEPLOY_USER || 'stanislav' }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          command_timeout: 15m
+          script: |
+            set -euo pipefail
+            APP_DIR="${APP_DIR:-/opt/autotests-ai-landing}"
+            cd "$APP_DIR"
+            git fetch --all
+            git reset --hard origin/main
+            docker compose build backend
+            docker compose up -d --remove-orphans
+            curl -fsS http://127.0.0.1:8081/api/terminal | grep -q postgresql
+            bash deploy/smoke-remote.sh https://autotests.ai
+            echo "Deploy OK: https://autotests.ai ($(git rev-parse --short HEAD))"

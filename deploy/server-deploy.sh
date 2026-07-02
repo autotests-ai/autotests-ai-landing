@@ -18,6 +18,8 @@ docker compose up -d --remove-orphans
 
 curl -fsS http://127.0.0.1:8081/api/terminal | grep -q postgresql
 
+bash deploy/smoke-remote.sh https://autotests.ai
+
 if [[ -f deploy/nginx/autotests.ai.conf ]]; then
   sudo cp deploy/nginx/autotests.ai.conf /etc/nginx/conf.d/autotests.ai.conf
   sudo nginx -t

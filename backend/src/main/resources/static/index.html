@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>autotests.ai — landing</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="layout" data-testid="landing-layout">
+    <section class="terminal-panel" data-testid="terminal-panel">
+      <div class="terminal-header">
+        <div class="terminal-dots" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <span>terminal — autotests.ai</span>
+      </div>
+      <pre class="terminal-output" data-testid="terminal-output">autotests-ai landing — terminal demo
+Нажмите «Обновить» для GET /api/demo</pre>
+    </section>
+
+    <aside class="side-panel" data-testid="side-panel">
+      <div class="brand">autotests<span>.ai</span></div>
+      <p class="hint">Демо Spring Boot + PostgreSQL. Вывод слева обновляется через REST.</p>
+      <button type="button" class="refresh-btn" data-testid="refresh-button">Обновить</button>
+      <div class="status" data-testid="status-line"></div>
+    </aside>
+  </div>
+  <script src="/js/app.js"></script>
+</body>
+</html>

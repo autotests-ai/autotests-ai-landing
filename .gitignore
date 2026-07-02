@@ -1,0 +1,17 @@
+# Build
+backend/build/
+backend/.gradle/
+tests-java/build/
+tests-java/.gradle/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Runtime
+*.log
+.env
+
+# OS
+.DS_Store

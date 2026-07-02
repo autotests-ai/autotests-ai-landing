@@ -1,0 +1,337 @@
+/*
+ *
+ *   ╔══════════════════════════════════════════╗
+ *   ║           t e s t s - j a v a            ║
+ *   ╚══════════════════════════════════════════╝
+ *
+ *        (\_/)
+ *        ( •_•)
+ *        / >./gradlew test -Denv=local_e2e
+ *
+ *              .-------.
+ *             /  ✓ ✓ ✓  \
+ *            |  Selenide |
+ *            |  Allure   |
+ *            |  JUnit 5  |
+ *             \  ☕ 🚀  /
+ *              '-------'
+ *
+ *   "Зелёный билд — лучший вид счастья"
+ *
+ */
+
+buildscript {
+    ext {
+        allurePluginVersion = '4.1.0'
+        allureVersion       = '3.13.0'
+        allureBomVersion    = '2.35.2'
+        selenideVersion     = '7.16.2'
+        restAssuredVersion  = '5.5.7'
+        ownerVersion        = '1.0.12'
+        junitVersion        = '5.11.4'
+        slf4jVersion        = '2.0.17'
+        testParallelForks   = 1
+        defaultEnv          = 'autotests_local_e2e'
+    }
+}
+
+plugins {
+    id 'java-library'
+    id 'io.qameta.allure' version "${allurePluginVersion}"
+}
+
+def allureReportMode = System.getProperty('allureReportMode', 'allure3')
+def allureAgentMode = System.getProperty('allureAgentMode', 'none')
+def allureQualityGateHook = System.getProperty('allureQualityGate', 'false') == 'true'
+
+repositories {
+    mavenCentral()
+}
+
+allure {
+    version = allureVersion
+    adapter {
+        allureJavaVersion = allureBomVersion
+        resultsDir.set(layout.buildDirectory.dir('allure-results'))
+        autoconfigure.set(allureReportMode != 'none')
+        aspectjWeaver.set(allureReportMode != 'none')
+        frameworks {
+            junit5 {
+                enabled.set(allureReportMode != 'none')
+                autoconfigureListeners.set(allureReportMode != 'none')
+            }
+        }
+    }
+    report {
+        configFile.set(layout.projectDirectory.file('allurerc.json'))
+    }
+}
+
+dependencies {
+    testImplementation platform("io.qameta.allure:allure-bom:${allureBomVersion}")
+    testImplementation (
+            'io.qameta.allure:allure-jupiter',
+            'io.qameta.allure:allure-selenide',
+            "com.codeborne:selenide:${selenideVersion}",
+            "org.aeonbits.owner:owner:${ownerVersion}",
+            "org.junit.jupiter:junit-jupiter:${junitVersion}",
+            "io.rest-assured:rest-assured:${restAssuredVersion}",
+            'io.qameta.allure:allure-rest-assured')
+    testRuntimeOnly (
+            'org.junit.platform:junit-platform-launcher',
+            "org.slf4j:slf4j-simple:${slf4jVersion}")
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+def pyramidStand = System.getProperty('pyramidStand', 'autotests_local')
+def healthCheckEnvRef = [env: System.getProperty('env', defaultEnv)]
+
+def resolveConfiguredBaseUrl = { String env ->
+    def props = new Properties()
+    def configFile = file("src/test/resources/config/${env}.properties")
+    if (configFile.exists()) {
+        configFile.withInputStream { props.load(it) }
+    }
+    def baseUrl = (System.getProperty('baseUrl') ?: props.getProperty('baseUrl', '')).trim()
+    def basePath = (System.getProperty('basePath') ?: props.getProperty('basePath', '')).trim()
+    if (baseUrl) {
+        return baseUrl.endsWith('/') ? baseUrl : "${baseUrl}/"
+    }
+    if (basePath) {
+        return null
+    }
+    throw new GradleException("Set baseUrl or basePath in config/${env}.properties")
+}
+
+def shouldSkipHealthCheck = { String env ->
+    if (System.getProperty('skipHealthCheck', 'false') == 'true') {
+        return true
+    }
+    if (env.endsWith('_unit') || env.endsWith('_api')) {
+        return true
+    }
+    def includeTags = System.getProperty('includeTags', '').split(',').collect { it.trim() }.findAll { it }
+    return includeTags == ['api']
+}
+
+def runAppHealthCheck = { String env ->
+    if (shouldSkipHealthCheck(env)) {
+        return
+    }
+    def baseUrl = resolveConfiguredBaseUrl(env)
+    if (baseUrl == null || !baseUrl.startsWith('http')) {
+        return
+    }
+    def healthUrl = new URL(baseUrl)
+    try {
+        def conn = (java.net.HttpURLConnection) healthUrl.openConnection()
+        conn.setRequestMethod('GET')
+        conn.setConnectTimeout(5000)
+        conn.setReadTimeout(5000)
+        def code = conn.responseCode
+        if (code != 200) {
+            throw new GradleException(
+                    "App health check failed: GET ${healthUrl} returned HTTP ${code}. " +
+                    'Start backend: cd backend && ./gradlew bootRun'
+            )
+        }
+    } catch (java.net.ConnectException | java.net.SocketTimeoutException e) {
+        throw new GradleException(
+                "App health check failed: cannot reach ${healthUrl} (${e.class.simpleName}). " +
+                'Start backend: cd backend && ./gradlew bootRun',
+                e
+        )
+    }
+}
+
+tasks.register('healthCheck') {
+    group = 'verification'
+    description = 'GET baseUrl/ — requires Spring Boot backend; auto-skip for *_unit, *_api, -DincludeTags=api'
+    doLast {
+        runAppHealthCheck(healthCheckEnvRef.env)
+    }
+}
+
+test {
+    dependsOn healthCheck
+    useJUnitPlatform {
+        excludeTags 'ladder-ethalon', 'api'
+        def includeTagsProp = System.getProperty('includeTags')
+        if (includeTagsProp) {
+            includeTags(*(includeTagsProp.split(',')*.trim()))
+        }
+        def excludeTagsProp = System.getProperty('excludeTags')
+        if (excludeTagsProp) {
+            excludeTags(*(excludeTagsProp.split(',')*.trim()))
+        }
+    }
+    systemProperty 'env', System.getProperty('env', defaultEnv)
+    systemProperty 'allureReportMode', allureReportMode
+    systemProperty 'allureAgentMode', allureAgentMode
+    maxParallelForks = testParallelForks
+}
+
+def allureResultsDir = layout.buildDirectory.dir('allure-results').get().asFile
+
+def hasAllureResults = {
+    allureResultsDir.exists() && (allureResultsDir.listFiles()?.length ?: 0) > 0
+}
+
+tasks.register('allureAgentInspect', Exec) {
+    group = 'verification'
+    description = 'allure agent inspect build/allure-results → build/agent-output (-DallureAgentMode=inspect)'
+    onlyIf {
+        System.getProperty('allureAgentMode', 'none') == 'inspect'
+                && System.getProperty('allureReportMode', 'allure3') != 'none'
+                && hasAllureResults()
+    }
+    dependsOn test
+    def resultsDir = allureResultsDir.path
+    def outputDir = layout.buildDirectory.dir('agent-output').get().asFile.path
+    def configFile = layout.projectDirectory.file('allurerc.json').asFile.path
+    commandLine 'npx', '--yes', "allure@${allureVersion}", 'agent', 'inspect',
+            resultsDir, '--output', outputDir, '--config', configFile
+}
+
+def agentOutputDir = layout.buildDirectory.dir('agent-output').get().asFile
+
+def hasAgentOutput = {
+    agentOutputDir.exists() && (agentOutputDir.listFiles()?.length ?: 0) > 0
+}
+
+tasks.register('allureAgentQuery', Exec) {
+    group = 'verification'
+    description = 'allure agent query summary from build/agent-output (smoke after inspect)'
+    onlyIf { hasAgentOutput() }
+    def outputDir = agentOutputDir.path
+    commandLine 'npx', '--yes', "allure@${allureVersion}", 'agent', 'query',
+            '--from', outputDir, 'summary'
+}
+
+tasks.register('allureQualityGate', Exec) {
+    group = 'verification'
+    description = 'Allure 3 quality gate on build/allure-results (rules in allurerc.json)'
+    onlyIf {
+        System.getProperty('allureReportMode', 'allure3') != 'none' && hasAllureResults()
+    }
+    def resultsDir = allureResultsDir.path
+    def configFile = layout.projectDirectory.file('allurerc.json').asFile.path
+    commandLine 'npx', '--yes', "allure@${allureVersion}", 'quality-gate',
+            resultsDir, '--config', configFile
+}
+
+if (allureAgentMode == 'inspect' && allureReportMode != 'none') {
+    tasks.named('allureAgentInspect', Exec).configure {
+        finalizedBy 'allureAgentQuery'
+    }
+    tasks.named('test', Test).configure {
+        finalizedBy 'allureAgentInspect'
+    }
+}
+
+if (allureReportMode == 'none') {
+    tasks.named('test', Test).configure {
+        systemProperties.remove('allure.results.directory')
+        doLast {
+            delete layout.buildDirectory.dir('allure-results')
+        }
+    }
+}
+
+def pyramidLayerEnv = { String layer ->
+    "${System.getProperty('pyramidStand', pyramidStand)}_${layer}"
+}
+
+// Pyramid CI slices — ADR 005; `./gradlew test` = full suite, not these
+def layerTestSlices = [
+        [name: 'testUnit',        layer: 'unit',
+         description: 'Pyramid unit — helpers.*Test + config.*Test',
+         testPatterns: ['helpers.*Test', 'config.*Test']],
+        [name: 'testComponent',   layer: 'component',
+         description: 'Pyramid component — @Tag(component)',
+         includeTags: 'component'],
+        [name: 'testIntegration', layer: 'integration',
+         description: 'Pyramid integration — @Tag(layout,mount)',
+         includeTags: 'layout,mount'],
+        [name: 'testApi',         layer: 'api',
+         description: 'Pyramid api — @Tag(api); hub on hubUrl',
+         includeTags: 'api'],
+        [name: 'testE2e',         layer: 'e2e',
+         description: 'Pyramid e2e smoke — @Tag(smoke), exclude visual + ladder ethalon',
+         includeTags: 'smoke', excludeTags: 'visual,ladder-ethalon'],
+        [name: 'testVisual',      layer: 'visual',
+         description: 'Pyramid visual — @Tag(visual)',
+         includeTags: 'visual'],
+        [name: 'testManual',      layer: 'manual',
+         description: 'Pyramid manual — @Tag(manual) exploratory stubs',
+         includeTags: 'manual', excludeTags: 'ladder-ethalon'],
+        [name: 'testLadderEthalon', layer: 'e2e',
+         description: 'Style ladder ethalon — @Tag(ladder-ethalon); not CI / not bootstrap',
+         includeTags: 'ladder-ethalon'],
+]
+
+gradle.taskGraph.whenReady { graph ->
+    layerTestSlices.find { slice ->
+        graph.hasTask(tasks.named(slice.name).get())
+    }?.with { slice ->
+        healthCheckEnvRef.env = pyramidLayerEnv(slice.layer)
+    }
+}
+
+layerTestSlices.each { slice ->
+    def envName = pyramidLayerEnv(slice.layer)
+    tasks.register(slice.name, Test) {
+        group = 'verification'
+        description = "${slice.description} (env=${envName}; override stand: -DpyramidStand=one-page-form_prod)"
+        testClassesDirs = sourceSets.test.output.classesDirs
+        classpath = sourceSets.test.runtimeClasspath
+        useJUnitPlatform {
+            if (slice.includeTags) {
+                includeTags(*(slice.includeTags.split(',')*.trim()))
+            }
+            if (slice.excludeTags) {
+                excludeTags(*(slice.excludeTags.split(',')*.trim()))
+            }
+        }
+        if (slice.testPatterns) {
+            filter {
+                slice.testPatterns.each { pattern -> includeTestsMatching pattern }
+            }
+        }
+        systemProperty 'env', envName
+        systemProperty 'allureReportMode', allureReportMode
+        systemProperty 'allureAgentMode', allureAgentMode
+        maxParallelForks = testParallelForks
+        if (!shouldSkipHealthCheck(envName)) {
+            dependsOn healthCheck
+        }
+        if (allureReportMode == 'none') {
+            systemProperties.remove('allure.results.directory')
+            doLast {
+                delete layout.buildDirectory.dir('allure-results')
+            }
+        }
+    }
+}
+
+if (allureQualityGateHook && allureReportMode != 'none') {
+    tasks.named('test', Test).configure {
+        finalizedBy 'allureQualityGate'
+    }
+    layerTestSlices.each { slice ->
+        tasks.named(slice.name, Test).configure {
+            finalizedBy 'allureQualityGate'
+        }
+    }
+}
+
+if (allureAgentMode == 'inspect' && allureReportMode != 'none') {
+    layerTestSlices.each { slice ->
+        tasks.named(slice.name, Test).configure {
+            finalizedBy 'allureAgentInspect'
+        }
+    }
+}

@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: autotests_ai
+      POSTGRES_USER: autotests
+      POSTGRES_PASSWORD: autotests
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - autotests_internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U autotests -d autotests_ai"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: autotests_ai
+      DB_USER: autotests
+      DB_PASSWORD: autotests
+      SERVER_PORT: 8081
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8081:8081"
+    networks:
+      - autotests_internal
+
+networks:
+  autotests_internal:
+    driver: bridge
+
+volumes:
+  pgdata:

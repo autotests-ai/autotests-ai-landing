@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "id": "gen-python-policy",
+  "layer": "e2e",
+  "default_epic": "Одностраничная форма",
+  "negative_keywords": ["неусп", "невер", "wrong", "fail"],
+  "page_defaults": {
+    "login.html": "login.html?ru"
+  },
+  "default_page_path": "login.html?ru",
+  "locators": {
+    "login_input": "login-input",
+    "password_input": "password-input",
+    "submit_button": "submit-button",
+    "welcome_message": "welcome-message",
+    "error_message": "error-message"
+  },
+  "credentials": {
+    "valid_user": "user1",
+    "valid_password": "password1",
+    "wrong_password": "wrongpassword"
+  },
+  "i18n": {
+    "Wrong login or password": "Неверный логин или пароль",
+    "Welcome, user1!": "Добро пожаловать, user1!"
+  },
+  "assert_selectors": {
+    "welcome": "welcome_message",
+    "error": "error_message"
+  },
+  "assert_keywords": {
+    "welcome": ["привет", "welcome"],
+    "error": []
+  }
+}

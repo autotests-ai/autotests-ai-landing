@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/opt/autotests-ai-landing}"
+APP_DIR="${APP_DIR:-/home/selenoid/autotests-ai-landing}"
 REPO_URL="${REPO_URL:-https://github.com/autotests-ai/autotests-ai-landing.git}"
 
 if [[ ! -d "$APP_DIR/.git" ]]; then

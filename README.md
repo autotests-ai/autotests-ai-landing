@@ -32,37 +32,28 @@ cd tests-java
 
 Regenerate configs: `python scripts/gen-env-configs.py`
 
-## Server deploy (selenoid.autotests.cloud)
+## Server deploy (136.243.89.21 — selenoid user)
 
 ```bash
-sudo mkdir -p /opt/autotests-ai-landing
-sudo git clone https://github.com/autotests-ai/autotests-ai-landing.git /opt/autotests-ai-landing
-cd /opt/autotests-ai-landing
+mkdir -p ~/autotests-ai-landing
+git clone https://github.com/autotests-ai/autotests-ai-landing.git ~/autotests-ai-landing
+cd ~/autotests-ai-landing
 docker compose up -d --build
-sudo cp deploy/nginx/autotests.ai.conf /etc/nginx/conf.d/
-sudo nginx -t && sudo systemctl reload nginx
 ```
 
-Jenkins job: Pipeline from SCM → `deploy/jenkins/autotests-ai-landing-deploy.Jenkinsfile`.
+Legacy path `/opt/autotests-ai-landing` не используется на prod.
 
 ## Autodeploy (GitHub Actions → production)
 
-Push в `main` (и `repository_dispatch: deploy`) запускает [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): SSH на `selenoid.autotests.cloud`, `git pull`, `docker compose up --build`, smoke `https://autotests.ai`.
+Push в `main` (и `repository_dispatch: deploy`) запускает [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): SSH на `136.243.89.21` (user `selenoid`), `git pull`, `docker compose up --build`, smoke `https://autotests.ai`.
 
 **Secrets / variables** (Settings → Secrets and variables → Actions):
 
 | Name | Kind | Value |
 |------|------|-------|
-| `DEPLOY_SSH_KEY` | secret | private key для SSH (read/write на `/opt/autotests-ai-landing`) |
-| `DEPLOY_HOST` | variable (optional) | `selenoid.autotests.cloud` |
-| `DEPLOY_USER` | variable (optional) | `stanislav` |
-
-```bash
-# one-time: deploy key → secret (private part)
-ssh-keygen -t ed25519 -f ./autotests-ai-deploy -N "" -C "github-actions autotests-ai-landing"
-ssh-copy-id -i ./autotests-ai-deploy.pub stanislav@selenoid.autotests.cloud
-gh secret set DEPLOY_SSH_KEY -R autotests-ai/autotests-ai-landing < ./autotests-ai-deploy
-```
+| `DEPLOY_SSH_KEY` | secret | `~/.ssh/selenoid_prod_ed25519` (private) |
+| `DEPLOY_HOST` | variable (optional) | `136.243.89.21` |
+| `DEPLOY_USER` | variable (optional) | `selenoid` |
 
 Logo-generator после propagate шлёт `repository_dispatch` → этот workflow.
 

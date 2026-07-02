@@ -23,21 +23,27 @@ jobs:
             exit 1
           }
 
-      - name: Deploy on selenoid.autotests.cloud
+      - name: Deploy on production host
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ vars.DEPLOY_HOST || 'selenoid.autotests.cloud' }}
-          username: ${{ vars.DEPLOY_USER || 'stanislav' }}
+          host: ${{ vars.DEPLOY_HOST || '136.243.89.21' }}
+          username: ${{ vars.DEPLOY_USER || 'selenoid' }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           command_timeout: 15m
           script: |
             set -euo pipefail
-            APP_DIR="${APP_DIR:-/opt/autotests-ai-landing}"
+            APP_DIR="${APP_DIR:-/home/selenoid/autotests-ai-landing}"
             cd "$APP_DIR"
             git fetch --all
             git reset --hard origin/main
             docker compose build backend
             docker compose up -d --remove-orphans
+            for i in $(seq 1 30); do
+              if curl -fsS http://127.0.0.1:8081/api/terminal | grep -q postgresql; then
+                break
+              fi
+              sleep 2
+            done
             curl -fsS http://127.0.0.1:8081/api/terminal | grep -q postgresql
             bash deploy/smoke-remote.sh https://autotests.ai
             echo "Deploy OK: https://autotests.ai ($(git rev-parse --short HEAD))"

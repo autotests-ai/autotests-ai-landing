@@ -31,7 +31,7 @@ LAYER_DESC = {
 
 COMMON_BROWSER = {
     "browser": "chrome",
-    "browserVersion": "148",
+    "browserVersion": "148.0",
     "browserSize": "1920x1280",
     "headless": "true",
     "closeBrowserAfterAll": "true",
@@ -60,12 +60,12 @@ STANDS = {
         "rootLogLevel": "info",
     },
     "autotests_jenkins": {
-        "baseUrl": "https://autotests.ai/",
-        "apiBaseUrl": "https://autotests.ai/",
-        "hubUrl": "http://127.0.0.1:4444/",
-        "uiUrl": "http://127.0.0.1:8080/",
-        "remoteUrl": "http://127.0.0.1:4444/wd/hub",
-        "videoFolder": "http://127.0.0.1:4444/video/",
+        "baseUrl": "http://172.17.0.1:8081/",
+        "apiBaseUrl": "http://172.17.0.1:8081/",
+        "hubUrl": "http://172.17.0.1:4444/",
+        "uiUrl": "http://172.17.0.1:8080/",
+        "remoteUrl": "http://172.17.0.1:4444/wd/hub",
+        "videoFolder": "http://172.17.0.1:4444/video/",
         "logToConsole": "false",
         "selenideLogToConsole": "false",
         "rootLogLevel": "info",

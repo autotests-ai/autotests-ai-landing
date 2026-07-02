@@ -16,7 +16,7 @@ class LandingMountTests extends TestBase {
     @Test
     @Tag("layout")
     @Tag("mount")
-    @DisplayName("Landing page mounts terminal panel and refresh button")
+    @DisplayName("Landing page mounts terminal panel")
     void landingMounts() {
         landingPage.openPage()
                 .shouldShowLayout()

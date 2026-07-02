@@ -1,11 +1,4 @@
 const terminal = document.querySelector('[data-testid="terminal-output"]');
-const refreshButton = document.querySelector('[data-testid="refresh-button"]');
-const status = document.querySelector('[data-testid="status-line"]');
-
-const WELCOME = [
-  'autotests.ai — terminal',
-  'Нажмите «Обновить» для GET /api/terminal',
-].join('\n');
 
 function formatLines(payload) {
   const header = [
@@ -23,14 +16,8 @@ function setTerminal(text, loading = false) {
   terminal.classList.toggle('is-loading', loading);
 }
 
-function setStatus(text) {
-  status.textContent = text;
-}
-
 async function loadTerminal() {
-  refreshButton.disabled = true;
   setTerminal('→ Loading…', true);
-  setStatus('GET /api/terminal …');
 
   try {
     const response = await fetch('/api/terminal');
@@ -39,14 +26,9 @@ async function loadTerminal() {
     }
     const payload = await response.json();
     setTerminal(formatLines(payload));
-    setStatus(`OK ${response.status}`);
   } catch (error) {
     setTerminal(`✗ ${error.message}`, false);
-    setStatus('Ошибка загрузки');
-  } finally {
-    refreshButton.disabled = false;
   }
 }
 
-refreshButton.addEventListener('click', loadTerminal);
-setTerminal(WELCOME);
+loadTerminal();

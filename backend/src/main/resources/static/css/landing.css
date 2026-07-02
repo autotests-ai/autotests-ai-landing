@@ -16,32 +16,37 @@
   padding-top: var(--space-2);
 }
 
+.landing__brands {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
 .landing__brand {
   margin: 0;
   font-size: 1.75rem;
   font-weight: 600;
   line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.landing__brand-partner {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.landing__brand-partner:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .landing__brand-accent {
   color: var(--color-success);
-}
-
-.landing__lead {
-  margin: 0;
-  max-width: 28rem;
-  line-height: 1.55;
-}
-
-.landing__lead code {
-  font-size: var(--font-size-sm);
-  background: var(--color-surface-soft);
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-}
-
-.landing__status {
-  min-height: 1.5rem;
 }
 
 .landing__terminal-output {

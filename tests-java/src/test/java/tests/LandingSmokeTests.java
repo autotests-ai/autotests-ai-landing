@@ -9,18 +9,16 @@ import org.junit.jupiter.api.Test;
 
 @Layer("e2e")
 @Epic("Landing")
-@Feature("Terminal refresh")
+@Feature("Terminal load")
 @DisplayName("Landing smoke")
 class LandingSmokeTests extends TestBase {
 
     @Test
     @Tag("smoke")
-    @DisplayName("Refresh loads terminal lines from /api/terminal")
-    void refreshLoadsTerminalLines() {
+    @DisplayName("Page load fetches terminal lines from /api/terminal")
+    void pageLoadFetchesTerminalLines() {
         landingPage.openPage()
                 .shouldShowLayout()
-                .clickRefresh()
-                .shouldShowTerminalText("source: postgresql")
-                .shouldShowStatus("OK 200");
+                .shouldShowTerminalText("source: postgresql");
     }
 }

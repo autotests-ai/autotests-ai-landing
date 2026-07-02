@@ -2,7 +2,7 @@
 
 Spring Boot (Java 21) + PostgreSQL landing for [autotests.ai](https://autotests.ai).
 
-- **Backend:** `backend/` — REST `GET /api/terminal`, static UI (main слева, terminal справа, кнопка «Обновить»)
+- **Backend:** `backend/` — REST `GET /api/terminal`, static UI (main слева, terminal справа, авто-загрузка при открытии)
 - **E2E:** `tests-java/` — Gradle + Selenide + Allure, env `autotests_{local,jenkins,prod}_*`
 - **Deploy:** `docker-compose.yml` — только `postgres` + `backend` на `127.0.0.1:8081` (Selenoid UI остаётся на `:8080`)
 - **Nginx:** `deploy/nginx/autotests.ai.conf`

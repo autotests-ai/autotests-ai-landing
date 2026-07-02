@@ -10,8 +10,8 @@ code="$(curl -s -o /dev/null -w '%{http_code}' "${BASE_URL}/")"
 echo "HTTP ${code}"
 [[ "$code" == "200" ]] || { echo "FAIL: expected 200" >&2; exit 1; }
 
-echo "=== GET ${BASE_URL}/api/demo ==="
-body="$(curl -fsSL "${BASE_URL}/api/demo")"
+echo "=== GET ${BASE_URL}/api/terminal ==="
+body="$(curl -fsSL "${BASE_URL}/api/terminal")"
 echo "$body" | grep -q postgresql || { echo "FAIL: missing postgresql in response" >&2; exit 1; }
 
 echo "Smoke OK: ${BASE_URL}"

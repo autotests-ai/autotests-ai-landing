@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 @Epic("Landing")
 @Feature("Layout mount")
 @DisplayName("Landing mount")
-class DemoMountTests extends TestBase {
+class LandingMountTests extends TestBase {
 
     @Test
     @Tag("layout")
@@ -20,6 +20,6 @@ class DemoMountTests extends TestBase {
     void landingMounts() {
         landingPage.openPage()
                 .shouldShowLayout()
-                .shouldShowTerminalText("autotests-ai landing");
+                .shouldShowTerminalText("autotests.ai");
     }
 }

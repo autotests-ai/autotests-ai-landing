@@ -3,13 +3,13 @@ const refreshButton = document.querySelector('[data-testid="refresh-button"]');
 const status = document.querySelector('[data-testid="status-line"]');
 
 const WELCOME = [
-  'autotests-ai landing — terminal demo',
-  'Нажмите «Обновить» для GET /api/demo',
+  'autotests.ai — terminal',
+  'Нажмите «Обновить» для GET /api/terminal',
 ].join('\n');
 
 function formatLines(payload) {
   const header = [
-    '$ curl -s /api/demo',
+    '$ curl -s /api/terminal',
     `→ fetchedAt: ${payload.fetchedAt}`,
     `→ source: ${payload.source}`,
     '',
@@ -27,13 +27,13 @@ function setStatus(text) {
   status.textContent = text;
 }
 
-async function loadDemo() {
+async function loadTerminal() {
   refreshButton.disabled = true;
   setTerminal('→ Loading…', true);
-  setStatus('GET /api/demo …');
+  setStatus('GET /api/terminal …');
 
   try {
-    const response = await fetch('/api/demo');
+    const response = await fetch('/api/terminal');
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
@@ -48,5 +48,5 @@ async function loadDemo() {
   }
 }
 
-refreshButton.addEventListener('click', loadDemo);
+refreshButton.addEventListener('click', loadTerminal);
 setTerminal(WELCOME);

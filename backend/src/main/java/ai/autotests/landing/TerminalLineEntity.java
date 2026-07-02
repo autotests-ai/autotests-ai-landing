@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "demo_lines")
-public class DemoLineEntity {
+@Table(name = "terminal_lines")
+public class TerminalLineEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +21,10 @@ public class DemoLineEntity {
     @Column(nullable = false, length = 512)
     private String content;
 
-    protected DemoLineEntity() {
+    protected TerminalLineEntity() {
     }
 
-    public DemoLineEntity(int lineOrder, String content) {
+    public TerminalLineEntity(int lineOrder, String content) {
         this.lineOrder = lineOrder;
         this.content = content;
     }

@@ -9,14 +9,14 @@ import org.junit.jupiter.api.Test;
 
 @Layer("e2e")
 @Epic("Landing")
-@Feature("Demo refresh")
+@Feature("Terminal refresh")
 @DisplayName("Landing smoke")
-class DemoSmokeTests extends TestBase {
+class LandingSmokeTests extends TestBase {
 
     @Test
     @Tag("smoke")
-    @DisplayName("Refresh loads demo lines from /api/demo")
-    void refreshLoadsDemoLines() {
+    @DisplayName("Refresh loads terminal lines from /api/terminal")
+    void refreshLoadsTerminalLines() {
         landingPage.openPage()
                 .shouldShowLayout()
                 .clickRefresh()

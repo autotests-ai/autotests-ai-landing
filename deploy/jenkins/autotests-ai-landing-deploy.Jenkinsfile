@@ -35,8 +35,8 @@ pipeline {
 
         stage('Smoke') {
             steps {
-                sh 'curl -fsS http://127.0.0.1:8081/api/demo | grep -q postgresql'
-                sh 'curl -fsS https://autotests.ai/api/demo | grep -q postgresql'
+                sh 'curl -fsS http://127.0.0.1:8081/api/terminal | grep -q postgresql'
+                sh 'curl -fsS https://autotests.ai/api/terminal | grep -q postgresql'
             }
         }
 

@@ -11,22 +11,21 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 
 @Layer("api")
 @Epic("Landing API")
-@Feature("Demo endpoint")
-@DisplayName("Demo API")
-class DemoApiTests extends ApiTestBase {
+@Feature("Terminal endpoint")
+@DisplayName("Terminal API")
+class TerminalApiTests extends ApiTestBase {
 
     @Test
     @Tag("api")
-    @DisplayName("GET /api/demo returns seeded PostgreSQL lines")
-    void demoEndpointReturnsSeed() {
+    @DisplayName("GET /api/terminal returns seeded PostgreSQL lines")
+    void terminalEndpointReturnsSeed() {
         given()
                 .when()
-                .get("/api/demo")
+                .get("/api/terminal")
                 .then()
                 .statusCode(200)
                 .body("source", equalTo("postgresql"))

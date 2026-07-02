@@ -16,7 +16,7 @@ git reset --hard origin/main
 docker compose build backend
 docker compose up -d --remove-orphans
 
-curl -fsS http://127.0.0.1:8081/api/demo | grep -q postgresql
+curl -fsS http://127.0.0.1:8081/api/terminal | grep -q postgresql
 
 if [[ -f deploy/nginx/autotests.ai.conf ]]; then
   sudo cp deploy/nginx/autotests.ai.conf /etc/nginx/conf.d/autotests.ai.conf

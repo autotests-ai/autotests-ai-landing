@@ -1,0 +1,108 @@
+/* Header — фаза 2 (skill header-layout) */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-header);
+  background: var(--color-header-surface, var(--color-surface));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: var(--header-height);
+  margin: 0;
+  padding: 0 var(--page-padding-x);
+}
+
+/* Step 2: brand */
+.header__brand {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.header__brand-link {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 0;
+  text-decoration: none;
+}
+
+.header__brand-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.header__brand-logo {
+  display: block;
+  width: auto;
+  height: var(--header-brand-logo-height);
+  max-height: var(--header-brand-logo-height);
+  transform: translateY(var(--space-1));
+}
+
+/* Step 3: nav */
+.header__nav {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.header__nav .link--nav + .link--nav {
+  position: relative;
+  padding-left: calc(var(--space-3) + 1px);
+  margin-left: var(--space-3);
+}
+
+.header__nav .link--nav + .link--nav::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 1px;
+  height: var(--control-height-md);
+  background: var(--color-border);
+  transform: translateY(-50%);
+}
+
+/* Step 4: search */
+.header__search {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.header__search .input {
+  width: 100%;
+  min-width: 0;
+  min-height: calc(var(--control-height-md) - 2 * var(--space-1));
+  padding-block: var(--space-1);
+}
+
+/* Step 5: slot */
+.header__slot {
+  flex-shrink: 0;
+}
+
+/* Step 6: tools */
+.header__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* Step 7: responsive */
+@media (max-width: 768px) {
+  .header__nav,
+  .header__search {
+    display: none;
+  }
+}

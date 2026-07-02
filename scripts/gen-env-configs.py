@@ -7,7 +7,7 @@ from pathlib import Path
 
 CONFIG_DIR = Path(__file__).resolve().parents[1] / "tests-java/src/test/resources/config"
 LAYERS = ("unit", "component", "integration", "api", "e2e", "visual", "manual")
-KEEP = frozenset({"default.properties"})
+KEEP = frozenset({"default.properties", "_ethalon.properties"})
 
 GRADLE_HINT = {
     "unit": "./gradlew testUnit -DpyramidStand={stand}",

@@ -1,5 +1,5 @@
 {
-  "name": "autotests-ai-landing Tests",
+  "name": "autotests-ai-app Tests",
   "historyPath": "./history.jsonl",
   "appendHistory": true,
   "historyLimit": 20,
@@ -76,7 +76,7 @@
     },
     "dashboard": {
       "options": {
-        "reportName": "autotests-ai-landing Tests Dashboard",
+        "reportName": "autotests-ai-app Tests Dashboard",
         "reportLanguage": "ru",
         "layout": [
           {
@@ -119,7 +119,7 @@
     },
     "csv": {
       "options": {
-        "fileName": "autotests-ai-landing.csv"
+        "fileName": "autotests-ai-app.csv"
       }
     }
   }

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: autotests-ai-landing
+    name: autotests-ai-app
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:autotests_ai}
     username: ${DB_USER:autotests}

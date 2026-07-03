@@ -1,4 +1,4 @@
-# autotests-ai-landing
+# autotests-ai-app
 
 Spring Boot (Java 21) + PostgreSQL landing for [autotests.ai](https://autotests.ai).
 
@@ -6,7 +6,7 @@ Spring Boot (Java 21) + PostgreSQL landing for [autotests.ai](https://autotests.
 - **E2E:** `tests-java/` — Gradle + Selenide + Allure, env `autotests_{local,jenkins,prod}_*`
 - **Deploy:** `docker-compose.yml` — только `postgres` + `backend` на `127.0.0.1:8081` (Selenoid UI остаётся на `:8080`)
 - **Nginx:** `deploy/nginx/autotests.ai.conf`
-- **Jenkins:** `deploy/jenkins/autotests-ai-landing-deploy.Jenkinsfile`
+- **Jenkins:** `deploy/jenkins/autotests-ai-app-deploy.Jenkinsfile`
 
 ## Local dev
 
@@ -35,13 +35,13 @@ Regenerate configs: `python scripts/gen-env-configs.py`
 ## Server deploy (136.243.89.21 — selenoid user)
 
 ```bash
-mkdir -p ~/autotests-ai-landing
-git clone https://github.com/autotests-ai/autotests-ai-landing.git ~/autotests-ai-landing
-cd ~/autotests-ai-landing
+mkdir -p ~/autotests-ai-app
+git clone https://github.com/autotests-ai/autotests-ai-app.git ~/autotests-ai-app
+cd ~/autotests-ai-app
 docker compose up -d --build
 ```
 
-Legacy path `/opt/autotests-ai-landing` не используется на prod.
+Legacy path `/opt/autotests-ai-landing` и `/home/selenoid/autotests-ai-landing` не используются на prod.
 
 ## Autodeploy (GitHub Actions → production)
 
@@ -56,6 +56,8 @@ Push в `main` (и `repository_dispatch: deploy`) запускает [`.github/w
 | `DEPLOY_USER` | variable (optional) | `selenoid` |
 
 Logo-generator после propagate шлёт `repository_dispatch` → этот workflow.
+
+Jenkins job (optional): Pipeline from SCM → `deploy/jenkins/autotests-ai-app-deploy.Jenkinsfile`.
 
 E2E on Jenkins agent:
 

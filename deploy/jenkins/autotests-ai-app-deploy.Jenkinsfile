@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        APP_DIR = '/opt/autotests-ai-landing'
+        APP_DIR = '/home/selenoid/autotests-ai-app'
         COMPOSE_FILE = 'docker-compose.yml'
     }
 

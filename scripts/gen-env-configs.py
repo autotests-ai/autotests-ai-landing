@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Generate autotests_* env profiles for autotests-ai-landing tests-java."""
+"""Generate autotests_* env profiles for autotests-ai-app tests-java."""
 
 from __future__ import annotations
 

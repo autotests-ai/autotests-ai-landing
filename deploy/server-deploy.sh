@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/home/selenoid/autotests-ai-landing}"
-REPO_URL="${REPO_URL:-https://github.com/autotests-ai/autotests-ai-landing.git}"
+APP_DIR="${APP_DIR:-/home/selenoid/autotests-ai-app}"
+REPO_URL="${REPO_URL:-https://github.com/autotests-ai/autotests-ai-app.git}"
 
 if [[ ! -d "$APP_DIR/.git" ]]; then
   sudo mkdir -p "$APP_DIR"

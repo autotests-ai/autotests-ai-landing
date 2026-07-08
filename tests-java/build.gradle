@@ -63,7 +63,7 @@ allure {
         }
     }
     report {
-        configFile.set(layout.projectDirectory.file('allurerc.json'))
+        configFile.set(layout.projectDirectory.file('allurerc.mjs'))
     }
 }
 
@@ -191,7 +191,7 @@ tasks.register('allureAgentInspect', Exec) {
     dependsOn test
     def resultsDir = allureResultsDir.path
     def outputDir = layout.buildDirectory.dir('agent-output').get().asFile.path
-    def configFile = layout.projectDirectory.file('allurerc.json').asFile.path
+    def configFile = layout.projectDirectory.file('allurerc.mjs').asFile.path
     commandLine 'npx', '--yes', "allure@${allureVersion}", 'agent', 'inspect',
             resultsDir, '--output', outputDir, '--config', configFile
 }
@@ -213,12 +213,12 @@ tasks.register('allureAgentQuery', Exec) {
 
 tasks.register('allureQualityGate', Exec) {
     group = 'verification'
-    description = 'Allure 3 quality gate on build/allure-results (rules in allurerc.json)'
+    description = 'Allure 3 quality gate on build/allure-results (rules in allurerc.mjs)'
     onlyIf {
         System.getProperty('allureReportMode', 'allure3') != 'none' && hasAllureResults()
     }
     def resultsDir = allureResultsDir.path
-    def configFile = layout.projectDirectory.file('allurerc.json').asFile.path
+    def configFile = layout.projectDirectory.file('allurerc.mjs').asFile.path
     commandLine 'npx', '--yes', "allure@${allureVersion}", 'quality-gate',
             resultsDir, '--config', configFile
 }
